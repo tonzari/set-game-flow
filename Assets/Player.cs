@@ -7,5 +7,6 @@ public class Player
     public Player(string playerName)
     {
         PlayerName = playerName;
+        Score = 0;
     }
 }

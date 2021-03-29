@@ -8,19 +8,35 @@ public class SetGameLogic : MonoBehaviour
     private int _cardDeck = 81;
     private int _cardsInPlay = 0;
 
-    // State, of sorts
+    // Game state
     private bool _isGameOver = false;
     private bool _isWaitingForPlayerInput = false;
 
-    private Player _playerOne;
-    private Player _playerTwo;
+    private List<Player> _players;
+    
+    private void Start()
+    {
+        GameInit();
+    }
+
+    private void Update()
+    {
+        if (!_isGameOver && _isWaitingForPlayerInput)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                PlayerCallsSet(_players[0]);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                PlayerCallsSet(_players[1]);
+            }
+        }
+    }
 
     private void GameInit()
     {
-        _playerOne = new Player("Antonio"); // You should change this immediately
-        _playerTwo = new Player("Hamburger"); // You should change this immediately
-
-
+        UpdatePlayerList();
         ShuffleCards(); 
         DealCards(12);
        
@@ -28,16 +44,41 @@ public class SetGameLogic : MonoBehaviour
         _isWaitingForPlayerInput = true;
     }
 
-    private void MainGameLoop(bool isThereASet, Player playerThatCalled)
+    private void UpdatePlayerList()
+    {
+        _players = new List<Player>();
+        int playerCount = GetPlayerCount();
+
+        for (int i = 1; i <= playerCount; i++)
+        {
+            string newPlayerName = GetPlayerName(i);
+            Player newPlayer = new Player(newPlayerName);
+            _players.Add(newPlayer);
+        }
+    }
+
+    private string GetPlayerName(int i)
+    {
+        string playerNumber = i.ToString();
+        return $"Player {playerNumber}";
+    }
+
+    private int GetPlayerCount()
+    {
+        //This should get a number set by the user through the UI
+        return 4;
+    }
+
+    private void PlayerCallsSet(Player playerThatCalledSet)
     {
         _isWaitingForPlayerInput = false;
 
-        if (isThereASet)
+        if (CheckSetExists() && CheckUserCorrectlyCalledSet())
         {
-            playerThatCalled.Score++;
-            _cardsInPlay -= 3;
+            RemoveCalledSetCards();
+            playerThatCalledSet.Score++;
 
-            Debug.Log(playerThatCalled.PlayerName + " calls SET! Take your cards. " + playerThatCalled.PlayerName + " has " + playerThatCalled.Score + " points.");
+            Debug.Log(playerThatCalledSet.PlayerName + " calls SET! Take your cards. " + playerThatCalledSet.PlayerName + " has " + playerThatCalledSet.Score + " points.");
 
             if (_cardsInPlay >= 12)
             {
@@ -48,11 +89,7 @@ public class SetGameLogic : MonoBehaviour
                 if (_cardDeck >= 3)
                 {
                     DealCards(3);
-                    //float randBool = UnityEngine.Random.value;
-                    //MainGameLoop(randBool > 0.5);
-                    //MainGameLoop(true);
                     _isWaitingForPlayerInput = true;
-                    return;
                 }
                 else
                 {
@@ -65,48 +102,71 @@ public class SetGameLogic : MonoBehaviour
                         Debug.Log("Yep, there's a set/there are sets left. Press your number to call SET!");
                         //MainGameLoop(true);
                         _isWaitingForPlayerInput = true;
-                        return;
 
                     }
                     else
                     {
-                        GameOverSequence();
+                        GameOver();
                     }
                 }
             }
         }
         else
         {
-            Debug.Log("NO! There are NOT any undiscovered sets. Dealing 3 more cards.");
+            Debug.Log("There are NOT any undiscovered sets. Dealing 3 more cards.");
             DealCards(3);
-            //float randBool = UnityEngine.Random.value;
-            // MainGameLoop(randBool > 0.5);
-            //MainGameLoop(true);
-            Debug.Log("There are "+ _cardsInPlay +"cards in play. Call Set with your number key.");
+            Debug.Log("There are "+ _cardsInPlay +" cards in play. Call Set with your number key.");
             _isWaitingForPlayerInput = true;
             return;
         }
 
     }
 
+    private void RemoveCalledSetCards()
+    {
+        _cardsInPlay -= 3;
+    }
+
+    private bool CheckUserCorrectlyCalledSet()
+    {
+        // This should process if the user correctly called a set
+        return true;
+    }
+
+    private bool CheckSetExists()
+    {
+        // this should process the current cards to make sure a set actually exists.
+        // for now, we just always say it is true.
+        return true;
+    }
+
     private void HandleExcessCardsInPlayTurn()
     {
         Debug.Log("There are still " + _cardsInPlay + " cards in play on the table.");
-        //float randBool = UnityEngine.Random.value;
-        //MainGameLoop(randBool > 0.5);
-        //MainGameLoop(true);
         Debug.Log("Remember to press your number key to call SET!");
+       
         _isWaitingForPlayerInput = true;
-        return;
     }
 
-    private void GameOverSequence()
+    private void GameOver()
     {
-        Debug.Log("No sets left. Game over!");
-        Debug.Log(_playerOne.PlayerName + " has " + _playerOne.Score + " points.");
-        Debug.Log(_playerTwo.PlayerName + " has " + _playerTwo.Score + " points.");
+        int highScore = 0;
+        string highScoreHolder = "";
+
+        foreach (Player player in _players)
+        {
+            if (player.Score > highScore)
+            {
+                highScore = player.Score;
+                highScoreHolder = player.PlayerName;
+            }
+
+            Debug.Log($"{player.PlayerName} has {player.Score} points.");
+        }
+
         _isGameOver = true;
-        Debug.Log("Do you want to play again? You have to restart the program. Sorry.");
+
+        Debug.Log($"No sets left. Game over! The winner is {highScoreHolder}");
     }
 
     private void ShuffleCards()
@@ -116,33 +176,10 @@ public class SetGameLogic : MonoBehaviour
 
     private void DealCards(int howManyCards)
     {
-        //we should just subtract from the main deck
-        //and add to cardsInPlay
+        //subtract from the main deck
+        //add them to cardsInPlay
 
         _cardDeck -= howManyCards;
         _cardsInPlay += howManyCards;
-    }
-
-    private void Start()
-    {
-        GameInit();
-    }
-
-    private void Update()
-    {
-        //float randBool = UnityEngine.Random.value;
-        //MainGameLoop(randBool > 0.5);
-        if (!_isGameOver && _isWaitingForPlayerInput)
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                MainGameLoop(true, _playerOne);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                MainGameLoop(true, _playerTwo);
-            }
-        }
-        
     }
 }
