@@ -11,12 +11,16 @@ public class InitializeGameState : State
     public override void Enter()
     {
         base.Enter();
+
+        Debug.Log("ENTERED STATE: InitializeGame");
+
+        setGame.ResetGameData();
         setGame.CreatePlayerList();
         setGame.ShuffleCards();
         setGame.DealCards(12);
         startGame = false;
 
-        Debug.Log("Welcome to SET!");
+        Debug.Log("Welcome to SET! Press the space bar to begin.");
     }
 
     public override void Exit()

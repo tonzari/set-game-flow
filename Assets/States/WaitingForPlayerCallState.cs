@@ -18,6 +18,8 @@ public class WaitingForPlayerCallState : State
     {
         base.Enter();
 
+        Debug.Log("ENTERED STATE: WaitingForPlayerCall");
+
         playerCalledSet = false;
     }
 
@@ -62,7 +64,6 @@ public class WaitingForPlayerCallState : State
             {
                 stateMachine.ChangeState(setGame.noSetsAvailable);
             }
-
         }
     }
 }

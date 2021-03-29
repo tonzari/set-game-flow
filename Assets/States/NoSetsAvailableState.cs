@@ -12,6 +12,8 @@ public class NoSetsAvailableState : State
     {
         base.Enter();
 
+        Debug.Log("ENTERED STATE: NoSetsAvailable");
+
         Debug.Log("There are NO undiscovered sets here. Dealing 3 more cards!");
         setGame.DealCards(3);
     }
