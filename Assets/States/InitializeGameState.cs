@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class InitializeGameState : State
 {
+    private bool startGame;
+
     public InitializeGameState(SetGame setGame, StateMachine stateMachine) : base(setGame, stateMachine)
     {
     }
@@ -12,6 +14,7 @@ public class InitializeGameState : State
         setGame.CreatePlayerList();
         setGame.ShuffleCards();
         setGame.DealCards(12);
+        startGame = false;
 
         Debug.Log("Welcome to SET!");
     }
@@ -25,12 +28,18 @@ public class InitializeGameState : State
     public override void HandleInput()
     {
         base.HandleInput();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            startGame = true;
+        }
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        
-        stateMachine.ChangeState(setGame.waitingForPlayerCall);
+        if (startGame)
+        {
+            stateMachine.ChangeState(setGame.waitingForPlayerCall);
+        }
     }
 }

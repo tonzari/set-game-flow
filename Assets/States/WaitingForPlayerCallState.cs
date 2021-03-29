@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class WaitingForPlayerCallState : State
 {
+    private bool playerCalledSet;
+    private int playerNumber;
+    private bool setExists => setGame.CheckSetExists();
+    private bool playerSetIsValid => setGame.CheckUserIsCorrect();
+
+
     public WaitingForPlayerCallState(SetGame setGame, StateMachine stateMachine) : base(setGame, stateMachine)
     {
     }
@@ -11,6 +17,8 @@ public class WaitingForPlayerCallState : State
     public override void Enter()
     {
         base.Enter();
+
+        playerCalledSet = false;
     }
 
     public override void Exit()
@@ -21,10 +29,40 @@ public class WaitingForPlayerCallState : State
     public override void HandleInput()
     {
         base.HandleInput();
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            playerCalledSet = true;
+            playerNumber = 1;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            playerCalledSet = true;
+            playerNumber = 2;
+        }
+        else
+        {
+            playerCalledSet = false;
+        }
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+
+        if (playerCalledSet)
+        {
+            setGame.playerThatCalledSet = setGame.Players[playerNumber];
+
+            if (setExists && playerSetIsValid)
+            {
+                stateMachine.ChangeState(setGame.userScores);
+            }
+            else
+            {
+                stateMachine.ChangeState(setGame.noSetsAvailable);
+            }
+
+        }
     }
 }

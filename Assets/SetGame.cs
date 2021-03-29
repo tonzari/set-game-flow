@@ -9,15 +9,14 @@ public class SetGame : MonoBehaviour
     public State initializeGame;
     public State waitingForPlayerCall;
     public State gameEnding;
+    public State userScores;
+    public State noSetsAvailable;
 
-    private int _cardDeck = 81;
-    private int _cardsInPlay = 0;
+    public int CardDeck = 81;
+    public int CardsInPlay = 0;
 
-    // Game state
-    private bool _isGameOver = false;
-    private bool _isWaitingForPlayerInput = false;
-
-    private List<Player> _players;
+    public List<Player> Players;
+    public Player playerThatCalledSet = new Player();
     
     private void Start()
     {
@@ -25,53 +24,39 @@ public class SetGame : MonoBehaviour
 
         initializeGame = new InitializeGameState(this, gameSM);
         waitingForPlayerCall = new WaitingForPlayerCallState(this, gameSM);
+        gameEnding = new GameEndingState(this, gameSM);
+        userScores = new UserScoresState(this, gameSM);
+        noSetsAvailable = new NoSetsAvailableState(this, gameSM);
 
         gameSM.Initialize(initializeGame);
     }
 
     private void Update()
     {
-        if (!_isGameOver && _isWaitingForPlayerInput)
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                PlayerCallsSet(_players[0]);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                PlayerCallsSet(_players[1]);
-            }
-        }
-
         gameSM.CurrentState.HandleInput();
         gameSM.CurrentState.LogicUpdate();
     }
 
-    private void GameInit()
-    {
-        CreatePlayerList();
-        ShuffleCards(); 
-        DealCards(12);
-       
-        Debug.Log("Welcome to SET! You may start playing. To call SET, press the 1 key.");
-        _isWaitingForPlayerInput = true;
-    }
-
     public void CreatePlayerList()
     {
-        _players = new List<Player>();
+        Players = new List<Player>();
         int playerCount = GetPlayerCount();
 
         for (int i = 1; i <= playerCount; i++)
         {
             string newPlayerName = GetPlayerName(i);
-            Player newPlayer = new Player(newPlayerName);
-            _players.Add(newPlayer);
+            Player newPlayer = new Player()
+            {
+                PlayerName = newPlayerName,
+                Score = 0
+            };
+            Players.Add(newPlayer);
         }
     }
 
     private string GetPlayerName(int i)
     {
+        // This is just a dumby method. Later we will get the name through the game UI
         string playerNumber = i.ToString();
         return $"Player {playerNumber}";
     }
@@ -82,27 +67,24 @@ public class SetGame : MonoBehaviour
         return 4;
     }
 
-    private void PlayerCallsSet(Player playerThatCalledSet)
+    public void PlayerCallsSet(Player playerThatCalledSet)
     {
-        _isWaitingForPlayerInput = false;
-
-        if (CheckSetExists() && CheckUserCorrectlyCalledSet())
+        if (CheckSetExists() && CheckUserIsCorrect())
         {
-            RemoveCalledSetCards();
+            UserCollectsCardsTheyWon();
             playerThatCalledSet.Score++;
 
             Debug.Log(playerThatCalledSet.PlayerName + " calls SET! Take your cards. " + playerThatCalledSet.PlayerName + " has " + playerThatCalledSet.Score + " points.");
 
-            if (_cardsInPlay >= 12)
+            if (CardsInPlay >= 12)
             {
                 HandleExcessCardsInPlayTurn();
             }
             else
             {
-                if (_cardDeck >= 3)
+                if (CardDeck >= 3)
                 {
                     DealCards(3);
-                    _isWaitingForPlayerInput = true;
                 }
                 else
                 {
@@ -128,45 +110,44 @@ public class SetGame : MonoBehaviour
         {
             Debug.Log("There are NOT any undiscovered sets. Dealing 3 more cards.");
             DealCards(3);
-            Debug.Log("There are "+ _cardsInPlay +" cards in play. Call Set with your number key.");
+            Debug.Log("There are "+ CardsInPlay +" cards in play. Call Set with your number key.");
             _isWaitingForPlayerInput = true;
-            return;
         }
 
     }
 
-    private void RemoveCalledSetCards()
+    public void UserCollectsCardsTheyWon()
     {
-        _cardsInPlay -= 3;
+        CardsInPlay -= 3;
     }
 
-    private bool CheckUserCorrectlyCalledSet()
+    public bool CheckUserIsCorrect()
     {
         // This should process if the user correctly called a set
         return true;
     }
 
-    private bool CheckSetExists()
+    public bool CheckSetExists()
     {
         // this should process the current cards to make sure a set actually exists.
         // for now, we just always say it is true.
         return true;
     }
 
-    private void HandleExcessCardsInPlayTurn()
+    public void HandleExcessCardsInPlayTurn()
     {
-        Debug.Log("There are still " + _cardsInPlay + " cards in play on the table.");
+        Debug.Log("No need to add more cards! There are still " + CardsInPlay + " cards in play on the table.");
         Debug.Log("Remember to press your number key to call SET!");
        
         _isWaitingForPlayerInput = true;
     }
 
-    private void GameOver()
+    public void GameOver()
     {
         int highScore = 0;
         string highScoreHolder = "";
 
-        foreach (Player player in _players)
+        foreach (Player player in Players)
         {
             if (player.Score > highScore)
             {
@@ -192,7 +173,7 @@ public class SetGame : MonoBehaviour
         //subtract from the main deck
         //add them to cardsInPlay
 
-        _cardDeck -= howManyCards;
-        _cardsInPlay += howManyCards;
+        CardDeck -= howManyCards;
+        CardsInPlay += howManyCards;
     }
 }
