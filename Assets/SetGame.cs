@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class SetGameLogic : MonoBehaviour
+public class SetGame : MonoBehaviour
 {
+    public StateMachine gameSM;
+    public State initializeGame;
+    public State waitingForPlayerCall;
+    public State gameEnding;
+
     private int _cardDeck = 81;
     private int _cardsInPlay = 0;
 
@@ -16,7 +21,12 @@ public class SetGameLogic : MonoBehaviour
     
     private void Start()
     {
-        GameInit();
+        gameSM = new StateMachine();
+
+        initializeGame = new InitializeGameState(this, gameSM);
+        waitingForPlayerCall = new WaitingForPlayerCallState(this, gameSM);
+
+        gameSM.Initialize(initializeGame);
     }
 
     private void Update()
@@ -32,11 +42,14 @@ public class SetGameLogic : MonoBehaviour
                 PlayerCallsSet(_players[1]);
             }
         }
+
+        gameSM.CurrentState.HandleInput();
+        gameSM.CurrentState.LogicUpdate();
     }
 
     private void GameInit()
     {
-        UpdatePlayerList();
+        CreatePlayerList();
         ShuffleCards(); 
         DealCards(12);
        
@@ -44,7 +57,7 @@ public class SetGameLogic : MonoBehaviour
         _isWaitingForPlayerInput = true;
     }
 
-    private void UpdatePlayerList()
+    public void CreatePlayerList()
     {
         _players = new List<Player>();
         int playerCount = GetPlayerCount();
@@ -169,12 +182,12 @@ public class SetGameLogic : MonoBehaviour
         Debug.Log($"No sets left. Game over! The winner is {highScoreHolder}");
     }
 
-    private void ShuffleCards()
+    public void ShuffleCards()
     {
         //this doesn't actually do anything
     }
 
-    private void DealCards(int howManyCards)
+    public void DealCards(int howManyCards)
     {
         //subtract from the main deck
         //add them to cardsInPlay
