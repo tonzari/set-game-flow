@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameEndingState : State
 {
@@ -16,7 +17,7 @@ public class GameEndingState : State
         playerWantsToContinue = false;
 
         Debug.Log("ENTERED STATE: GameEnding");
-
+        
         setGame.GameOver();
     }
 
@@ -41,7 +42,8 @@ public class GameEndingState : State
 
         if (playerWantsToContinue)
         {
-            stateMachine.ChangeState(setGame.initializeGame);
+            //stateMachine.ChangeState(setGame.initializeGame);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }

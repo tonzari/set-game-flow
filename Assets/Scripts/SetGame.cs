@@ -13,16 +13,7 @@ public class SetGame : MonoBehaviour
     public State noSetsAvailable;
 
     public int CardDeck = 81;
-
-    public void ResetGameData()
-    {
-        // reset all necessary game data here!
-        // maybe you can keep track of who has scored the most?
-    }
-
     public int CardsInPlay = 0;
-    public bool IsCardDeckEmpty = false;
-
     public List<Player> Players;
     public Player playerThatCalledSet = new Player();
     
@@ -62,14 +53,14 @@ public class SetGame : MonoBehaviour
         }
     }
 
-    private string GetPlayerName(int i)
+    public string GetPlayerName(int i)
     {
         // This is just a dumby method. Later we will get the name through the game UI
         string playerNumber = i.ToString();
         return $"Player {playerNumber}";
     }
 
-    private int GetPlayerCount()
+    public int GetPlayerCount()
     {
         //This should get a number set by the user through the UI
         return 4;
@@ -109,7 +100,7 @@ public class SetGame : MonoBehaviour
             Debug.Log($"{player.PlayerName} has {player.Score} points.");
         }
 
-        Debug.Log($"No sets left. Game over! The winner is {highScoreHolder}");
+        Debug.Log($"No sets left. Game over! The winner is {highScoreHolder}. Press space bar to play again.");
     }
 
     public void ShuffleCards()
@@ -124,5 +115,12 @@ public class SetGame : MonoBehaviour
 
         CardDeck -= howManyCards;
         CardsInPlay += howManyCards;
+    }
+    
+    public void ResetGameData()
+    {
+        // reset all necessary game data here!
+        // maybe you can keep track of who has scored the most?
+        // or just reload scene
     }
 }
