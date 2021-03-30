@@ -85,25 +85,6 @@ public class SetGame : StateMachine
         return true;
     }
 
-    public void GameOver()
-    {
-        int highScore = 0;
-        string highScoreHolder = "";
-
-        foreach (Player player in Players)
-        {
-            if (player.Score > highScore)
-            {
-                highScore = player.Score;
-                highScoreHolder = player.PlayerName;
-            }
-
-            Debug.Log($"{player.PlayerName} has {player.Score} points.");
-        }
-
-        Debug.Log($"No sets left. Game over! The winner is {highScoreHolder}. Press space bar to play again.");
-    }
-
     public void ShuffleCards()
     {
         //this doesn't actually do anything

@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class WaitingForPlayerCallState : State
 {
+    [SerializeField] private string startMessage = "Any player may call SET! See any sets?";
     private bool playerCalledSet;
     private int playerNumber;
     private bool setExists => setGame.CheckSetExists();
@@ -17,10 +19,10 @@ public class WaitingForPlayerCallState : State
     public override void Enter()
     {
         base.Enter();
-
-        Debug.Log("ENTERED STATE: WaitingForPlayerCall");
-
+        
         playerCalledSet = false;
+        
+        setGame.Interface.SetGameStatusText(startMessage);
     }
 
     public override void Exit()

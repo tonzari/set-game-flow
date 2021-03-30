@@ -12,9 +12,7 @@ public class InitializeGameState : State
     public override void Enter()
     {
         base.Enter();
-
-        Debug.Log("ENTERED STATE: InitializeGame");
-
+        
         setGame.CreatePlayerList();
         setGame.ShuffleCards();
         setGame.DealCards(12);
@@ -25,7 +23,6 @@ public class InitializeGameState : State
 
     public override void Exit()
     {
-        Debug.Log("You may start playing. To call SET, press your number key.");
         base.Exit();
     }
 

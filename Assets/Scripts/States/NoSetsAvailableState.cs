@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class NoSetsAvailableState : State
 {
+    [SerializeField] private string startMessage = "There are NO undiscovered sets here. Press space to Deal 3 more cards.";
+    private bool userPressedKey;
+
     public NoSetsAvailableState(SetGame setGame) : base(setGame)
     {
     }
@@ -12,26 +15,34 @@ public class NoSetsAvailableState : State
     {
         base.Enter();
 
-        Debug.Log("ENTERED STATE: NoSetsAvailable");
+        userPressedKey = false;
 
-        Debug.Log("There are NO undiscovered sets here. Dealing 3 more cards!");
+        setGame.Interface.SetGameStatusText(startMessage);
         setGame.DealCards(3);
     }
 
     public override void Exit()
     {
         base.Exit();
-        Debug.Log("There are " + setGame.CardsInPlay + " cards in play. Call Set with your number key.");
     }
 
     public override void HandleInput()
     {
         base.HandleInput();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            userPressedKey = true;
+        }
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        setGame.ChangeState(setGame.waitingForPlayerCall);
+        
+        if (userPressedKey)
+        {
+            setGame.ChangeState(setGame.waitingForPlayerCall);
+        }
     }
 }
