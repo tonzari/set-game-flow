@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameEndingState : State
 {
     private bool playerWantsToContinue;
-    public GameEndingState(SetGame setGame, StateMachine stateMachine) : base(setGame, stateMachine)
+    public GameEndingState(SetGame setGame) : base(setGame)
     {
     }
 

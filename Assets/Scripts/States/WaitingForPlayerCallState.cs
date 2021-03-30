@@ -10,7 +10,7 @@ public class WaitingForPlayerCallState : State
     private bool playerSetIsValid => setGame.CheckUserIsCorrect();
 
 
-    public WaitingForPlayerCallState(SetGame setGame, StateMachine stateMachine) : base(setGame, stateMachine)
+    public WaitingForPlayerCallState(SetGame setGame) : base(setGame)
     {
     }
 
@@ -58,11 +58,11 @@ public class WaitingForPlayerCallState : State
 
             if (setExists && playerSetIsValid)
             {
-                stateMachine.ChangeState(setGame.userScores);
+                setGame.ChangeState(setGame.userScores);
             }
             else
             {
-                stateMachine.ChangeState(setGame.noSetsAvailable);
+                setGame.ChangeState(setGame.noSetsAvailable);
             }
         }
     }

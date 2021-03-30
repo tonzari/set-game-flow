@@ -3,8 +3,9 @@ using UnityEngine;
 public class InitializeGameState : State
 {
     private bool startGame;
+    [SerializeField] private string startMessage = "Welcome to SET! Press the space bar to begin.";
 
-    public InitializeGameState(SetGame setGame, StateMachine stateMachine) : base(setGame, stateMachine)
+    public InitializeGameState(SetGame setGame) : base(setGame)
     {
     }
 
@@ -14,13 +15,12 @@ public class InitializeGameState : State
 
         Debug.Log("ENTERED STATE: InitializeGame");
 
-        setGame.ResetGameData();
         setGame.CreatePlayerList();
         setGame.ShuffleCards();
         setGame.DealCards(12);
         startGame = false;
 
-        Debug.Log("Welcome to SET! Press the space bar to begin.");
+        setGame.Interface.SetGameStatusText(startMessage);
     }
 
     public override void Exit()
@@ -43,7 +43,7 @@ public class InitializeGameState : State
         base.LogicUpdate();
         if (startGame)
         {
-            stateMachine.ChangeState(setGame.waitingForPlayerCall);
+            setGame.ChangeState(setGame.waitingForPlayerCall);
         }
     }
 }

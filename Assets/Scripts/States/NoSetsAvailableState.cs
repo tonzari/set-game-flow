@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NoSetsAvailableState : State
 {
-    public NoSetsAvailableState(SetGame setGame, StateMachine stateMachine) : base(setGame, stateMachine)
+    public NoSetsAvailableState(SetGame setGame) : base(setGame)
     {
     }
 
@@ -32,6 +32,6 @@ public class NoSetsAvailableState : State
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        stateMachine.ChangeState(setGame.waitingForPlayerCall);
+        setGame.ChangeState(setGame.waitingForPlayerCall);
     }
 }

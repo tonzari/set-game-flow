@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UserScoresState : State
 {
-    public UserScoresState(SetGame setGame, StateMachine stateMachine) : base(setGame, stateMachine)
+    public UserScoresState(SetGame setGame) : base(setGame)
     {
     }
 
@@ -39,7 +39,7 @@ public class UserScoresState : State
             Debug.Log("No need to add more cards! There are still " + setGame.CardsInPlay + " cards in play on the table.");
             Debug.Log("Remember to press your number key to call SET!");
 
-            stateMachine.ChangeState(setGame.waitingForPlayerCall);
+            setGame.ChangeState(setGame.waitingForPlayerCall);
         }
         else
         {
@@ -47,7 +47,7 @@ public class UserScoresState : State
             {
                 setGame.DealCards(3);
 
-                stateMachine.ChangeState(setGame.waitingForPlayerCall);
+                setGame.ChangeState(setGame.waitingForPlayerCall);
             }
             else
             {
@@ -60,11 +60,11 @@ public class UserScoresState : State
                 {
                     Debug.Log("Yep, there's a set/there are sets left. Press your number to call SET!");
 
-                    stateMachine.ChangeState(setGame.waitingForPlayerCall);
+                    setGame.ChangeState(setGame.waitingForPlayerCall);
                 }
                 else
                 {
-                    stateMachine.ChangeState(setGame.gameEnding);
+                    setGame.ChangeState(setGame.gameEnding);
                 }
             }
         }
