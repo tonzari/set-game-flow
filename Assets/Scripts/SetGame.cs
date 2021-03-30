@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class SetGame : MonoBehaviour
+public class SetGame : StateMachine
 {
-    public StateMachine gameSM;
+    [SerializeField] private SetUI ui;
+
+    public SetUI Interface => ui;
+        
     public State initializeGame;
     public State waitingForPlayerCall;
     public State gameEnding;
@@ -19,21 +22,19 @@ public class SetGame : MonoBehaviour
     
     private void Start()
     {
-        gameSM = new StateMachine();
+        initializeGame = new InitializeGameState(this);
+        waitingForPlayerCall = new WaitingForPlayerCallState(this);
+        gameEnding = new GameEndingState(this);
+        userScores = new UserScoresState(this);
+        noSetsAvailable = new NoSetsAvailableState(this);
 
-        initializeGame = new InitializeGameState(this, gameSM);
-        waitingForPlayerCall = new WaitingForPlayerCallState(this, gameSM);
-        gameEnding = new GameEndingState(this, gameSM);
-        userScores = new UserScoresState(this, gameSM);
-        noSetsAvailable = new NoSetsAvailableState(this, gameSM);
-
-        gameSM.Initialize(initializeGame);
+        Initialize(initializeGame);
     }
 
     private void Update()
     {
-        gameSM.CurrentState.HandleInput();
-        gameSM.CurrentState.LogicUpdate();
+        CurrentState.HandleInput();
+        CurrentState.LogicUpdate();
     }
 
     public void CreatePlayerList()
@@ -84,25 +85,6 @@ public class SetGame : MonoBehaviour
         return true;
     }
 
-    public void GameOver()
-    {
-        int highScore = 0;
-        string highScoreHolder = "";
-
-        foreach (Player player in Players)
-        {
-            if (player.Score > highScore)
-            {
-                highScore = player.Score;
-                highScoreHolder = player.PlayerName;
-            }
-
-            Debug.Log($"{player.PlayerName} has {player.Score} points.");
-        }
-
-        Debug.Log($"No sets left. Game over! The winner is {highScoreHolder}. Press space bar to play again.");
-    }
-
     public void ShuffleCards()
     {
         //this doesn't actually do anything
@@ -115,12 +97,5 @@ public class SetGame : MonoBehaviour
 
         CardDeck -= howManyCards;
         CardsInPlay += howManyCards;
-    }
-    
-    public void ResetGameData()
-    {
-        // reset all necessary game data here!
-        // maybe you can keep track of who has scored the most?
-        // or just reload scene
     }
 }

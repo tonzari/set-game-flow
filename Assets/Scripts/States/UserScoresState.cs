@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class UserScoresState : State
 {
-    public UserScoresState(SetGame setGame, StateMachine stateMachine) : base(setGame, stateMachine)
+    private string startMessage;
+    private bool userPressedKey;
+
+    public UserScoresState(SetGame setGame) : base(setGame)
     {
     }
 
@@ -12,12 +16,13 @@ public class UserScoresState : State
     {
         base.Enter();
 
-        Debug.Log("ENTERED STATE: UserScores");
-
+        userPressedKey = false;
         setGame.UserCollectsCardsTheyWon();
         setGame.playerThatCalledSet.Score++;
 
-        Debug.Log(setGame.playerThatCalledSet.PlayerName + " calls SET! Niee job! Take your cards. " + setGame.playerThatCalledSet.PlayerName + " now has " + setGame.playerThatCalledSet.Score + " points.");
+        startMessage = $"{setGame.playerThatCalledSet.PlayerName} calls SET! Nice job! Take your cards. {setGame.playerThatCalledSet.PlayerName} now has {setGame.playerThatCalledSet.Score} points.";
+        
+        setGame.Interface.SetGameStatusText(startMessage);
     }
 
     public override void Exit()
@@ -28,43 +33,53 @@ public class UserScoresState : State
     public override void HandleInput()
     {
         base.HandleInput();
+        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            userPressedKey = true;
+        }
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
 
-        if (setGame.CardsInPlay >= 12)
+        if (userPressedKey)
         {
-            Debug.Log("No need to add more cards! There are still " + setGame.CardsInPlay + " cards in play on the table.");
-            Debug.Log("Remember to press your number key to call SET!");
-
-            stateMachine.ChangeState(setGame.waitingForPlayerCall);
-        }
-        else
-        {
-            if (setGame.CardDeck >= 3)
+            userPressedKey = false;
+            
+            if (setGame.CardsInPlay >= 12)
             {
-                setGame.DealCards(3);
+                Debug.Log("No need to add more cards! There are still " + setGame.CardsInPlay + " cards in play on the table.");
+                Debug.Log("Remember to press your number key to call SET!");
 
-                stateMachine.ChangeState(setGame.waitingForPlayerCall);
+                setGame.ChangeState(setGame.waitingForPlayerCall);
             }
             else
             {
-                Debug.Log("Hold up! No cards left to add to the cards in play! Are there any sets left?");
-
-                // RANDOMIZE a bool so the game can actually end
-                float areThereUndiscoveredSetsEndOfGame = UnityEngine.Random.value;
-
-                if (setGame.CheckSetExists() && areThereUndiscoveredSetsEndOfGame > 0.5f)
+                if (setGame.CardDeck >= 3)
                 {
-                    Debug.Log("Yep, there's a set/there are sets left. Press your number to call SET!");
+                    setGame.DealCards(3);
 
-                    stateMachine.ChangeState(setGame.waitingForPlayerCall);
+                    setGame.ChangeState(setGame.waitingForPlayerCall);
                 }
                 else
                 {
-                    stateMachine.ChangeState(setGame.gameEnding);
+                    Debug.Log("Hold up! No cards left to add to the cards in play! Are there any sets left?");
+
+                    // RANDOMIZE a bool so the game can actually end
+                    float areThereUndiscoveredSetsEndOfGame = UnityEngine.Random.value;
+
+                    if (setGame.CheckSetExists() && areThereUndiscoveredSetsEndOfGame > 0.5f)
+                    {
+                        Debug.Log("Yep, there's a set/there are sets left. Press your number to call SET!");
+
+                        setGame.ChangeState(setGame.waitingForPlayerCall);
+                    }
+                    else
+                    {
+                        setGame.ChangeState(setGame.gameEnding);
+                    }
                 }
             }
         }

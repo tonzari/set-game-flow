@@ -1,12 +1,10 @@
 public class State
 {
     protected SetGame setGame;
-    protected StateMachine stateMachine;
 
-    protected State(SetGame setGame, StateMachine stateMachine)
+    protected State(SetGame setGame)
     {
         this.setGame = setGame;
-        this.stateMachine = stateMachine;
     }
 
     public virtual void Enter()

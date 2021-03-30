@@ -1,26 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class WaitingForPlayerCallState : State
 {
+    [SerializeField] private string startMessage = "Any player may call SET! See any sets?";
     private bool playerCalledSet;
     private int playerNumber;
     private bool setExists => setGame.CheckSetExists();
     private bool playerSetIsValid => setGame.CheckUserIsCorrect();
 
 
-    public WaitingForPlayerCallState(SetGame setGame, StateMachine stateMachine) : base(setGame, stateMachine)
+    public WaitingForPlayerCallState(SetGame setGame) : base(setGame)
     {
     }
 
     public override void Enter()
     {
         base.Enter();
-
-        Debug.Log("ENTERED STATE: WaitingForPlayerCall");
-
+        
         playerCalledSet = false;
+        
+        setGame.Interface.SetGameStatusText(startMessage);
     }
 
     public override void Exit()
@@ -58,11 +60,11 @@ public class WaitingForPlayerCallState : State
 
             if (setExists && playerSetIsValid)
             {
-                stateMachine.ChangeState(setGame.userScores);
+                setGame.ChangeState(setGame.userScores);
             }
             else
             {
-                stateMachine.ChangeState(setGame.noSetsAvailable);
+                setGame.ChangeState(setGame.noSetsAvailable);
             }
         }
     }
