@@ -14,7 +14,7 @@ public class SetGame : MonoBehaviour
 
     public int CardDeck = 81;
 
-    void ResetGameData()
+    public void ResetGameData()
     {
         // reset all necessary game data here!
         // maybe you can keep track of who has scored the most?
