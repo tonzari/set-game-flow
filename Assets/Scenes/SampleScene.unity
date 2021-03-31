@@ -1040,6 +1040,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameStatusText: {fileID: 514003425}
+  button: {fileID: 334999321}
+  inputField: {fileID: 11777001}
 --- !u!1 &1027299504
 GameObject:
   m_ObjectHideFlags: 0
