@@ -25,7 +25,7 @@ public class SetGame : StateMachine
         initializeGame = new InitializeGameState(this);
         waitingForPlayerCall = new WaitingForPlayerCallState(this);
         gameEnding = new GameEndingState(this);
-        userScores = new UserScoresState(this);
+        userScores = new PlayerScoresState(this);
         noSetsAvailable = new NoSetsAvailableState(this);
 
         Initialize(initializeGame);

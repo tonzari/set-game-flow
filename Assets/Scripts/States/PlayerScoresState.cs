@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
-public class UserScoresState : State
+public class PlayerScoresState : State
 {
     private string startMessage;
-    private bool userPressedKey;
+    private bool playerPressedKey;
 
-    public UserScoresState(SetGame setGame) : base(setGame)
+    public PlayerScoresState(SetGame setGame) : base(setGame)
     {
     }
 
@@ -16,11 +16,11 @@ public class UserScoresState : State
     {
         base.Enter();
 
-        userPressedKey = false;
+        playerPressedKey = false;
         setGame.UserCollectsCardsTheyWon();
         setGame.playerThatCalledSet.Score++;
 
-        startMessage = $"{setGame.playerThatCalledSet.PlayerName} calls SET! Nice job! Take your cards. {setGame.playerThatCalledSet.PlayerName} now has {setGame.playerThatCalledSet.Score} points.";
+        startMessage = $"{setGame.playerThatCalledSet.PlayerName} calls SET! Nice job! {setGame.playerThatCalledSet.PlayerName} now has {setGame.playerThatCalledSet.Score} points. Press space bar to take your cards.";
         
         setGame.Interface.SetGameStatusText(startMessage);
     }
@@ -36,7 +36,7 @@ public class UserScoresState : State
         
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            userPressedKey = true;
+            playerPressedKey = true;
         }
     }
 
@@ -44,9 +44,9 @@ public class UserScoresState : State
     {
         base.LogicUpdate();
 
-        if (userPressedKey)
+        if (playerPressedKey)
         {
-            userPressedKey = false;
+            playerPressedKey = false;
             
             if (setGame.CardsInPlay >= 12)
             {

@@ -3,7 +3,7 @@ using UnityEngine;
 public class InitializeGameState : State
 {
     private bool startGame;
-    [SerializeField] private string startMessage = "Welcome to SET! Press the space bar to begin.";
+    [SerializeField] private string startMessage = "Welcome to SET! How many players are there?";
 
     public InitializeGameState(SetGame setGame) : base(setGame)
     {
@@ -13,17 +13,17 @@ public class InitializeGameState : State
     {
         base.Enter();
         
-        setGame.CreatePlayerList();
-        setGame.ShuffleCards();
-        setGame.DealCards(12);
-        startGame = false;
-
         setGame.Interface.SetGameStatusText(startMessage);
+        startGame = false;
     }
 
     public override void Exit()
     {
         base.Exit();
+        
+        setGame.CreatePlayerList();
+        setGame.ShuffleCards();
+        setGame.DealCards(12);
     }
 
     public override void HandleInput()
@@ -40,6 +40,8 @@ public class InitializeGameState : State
         base.LogicUpdate();
         if (startGame)
         {
+            
+            
             setGame.ChangeState(setGame.waitingForPlayerCall);
         }
     }
