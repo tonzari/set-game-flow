@@ -8,8 +8,8 @@ public class SetUI : MonoBehaviour
     [SerializeField] private TMP_Text gameStatusText;
     
     // Input field and Button
-    [SerializeField] private Button button;
-    [SerializeField] private TMP_InputField inputField;
+    public Button button;
+    public TMP_InputField inputField;
 
     public void Start()
     {
