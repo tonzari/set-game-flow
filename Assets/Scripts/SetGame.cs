@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEditor.Experimental.GraphView;
 
 public class SetGame : StateMachine
 {
@@ -17,6 +18,7 @@ public class SetGame : StateMachine
 
     public int CardDeck = 81;
     public int CardsInPlay = 0;
+    public int PlayerCount = 0;
     public List<Player> Players;
     public Player playerThatCalledSet = new Player();
     
@@ -40,9 +42,8 @@ public class SetGame : StateMachine
     public void CreatePlayerList()
     {
         Players = new List<Player>();
-        int playerCount = GetPlayerCount();
 
-        for (int i = 0; i <= playerCount; i++)
+        for (int i = 0; i <= PlayerCount; i++)
         {
             string newPlayerName = GetPlayerName(i);
             Player newPlayer = new Player()
@@ -54,17 +55,16 @@ public class SetGame : StateMachine
         }
     }
 
+    public void SetPlayerCountWithButton()
+    {
+        PlayerCount = int.Parse(Interface.inputField.text) - 1;
+    }
+
     public string GetPlayerName(int i)
     {
         // This is just a dumby method. Later we will get the name through the game UI
         string playerNumber = i.ToString();
         return $"Player {playerNumber}";
-    }
-
-    public int GetPlayerCount()
-    {
-        //This should get a number set by the user through the UI
-        return 4;
     }
 
     public void UserCollectsCardsTheyWon()

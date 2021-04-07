@@ -40,8 +40,6 @@ public class InitializeGameState : State
         base.LogicUpdate();
         if (startGame)
         {
-            
-            
             setGame.ChangeState(setGame.waitingForPlayerCall);
         }
     }
