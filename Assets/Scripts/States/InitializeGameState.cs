@@ -1,8 +1,8 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InitializeGameState : State
 {
-    private bool startGame;
     [SerializeField] private string startMessage = "Welcome to SET! How many players are there?";
 
     public InitializeGameState(SetGame setGame) : base(setGame)
@@ -14,7 +14,6 @@ public class InitializeGameState : State
         base.Enter();
         
         setGame.Interface.SetGameStatusText(startMessage);
-        startGame = false;
     }
 
     public override void Exit()
@@ -29,18 +28,20 @@ public class InitializeGameState : State
     public override void HandleInput()
     {
         base.HandleInput();
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            startGame = true;
-        }
+        
+        // get player count: wait for button click and then take text from input field and set the player count. Validation is bad. Change it.
+        setGame.Interface.button.onClick.AddListener(() => setGame.SetPlayerCount(int.Parse(setGame.Interface.inputField.text)));
+        
+        // for player count, create a player in the list and wait for user input to get the name
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        if (startGame)
+        
+        /*if (startGame)
         {
             setGame.ChangeState(setGame.waitingForPlayerCall);
-        }
+        }*/
     }
 }

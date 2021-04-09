@@ -55,9 +55,9 @@ public class SetGame : StateMachine
         }
     }
 
-    public void SetPlayerCountWithButton()
+    public void SetPlayerCount(int playerCount)
     {
-        PlayerCount = int.Parse(Interface.inputField.text) - 1;
+        PlayerCount = playerCount;
     }
 
     public string GetPlayerName(int i)
